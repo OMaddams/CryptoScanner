@@ -18,5 +18,6 @@ namespace CryptoScanner.Data.Models
         [Precision(18, 2)]
         public decimal PriceChange24hPercent { get; set; }
         public DateTime LastUpdated { get; set; }
+        public string? Thumbnail { get; set; }
     }
 }
