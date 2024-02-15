@@ -39,7 +39,10 @@ namespace CryptoScanner.Data.Repositories.Implementation
         {
             return await context.Coins.FirstOrDefaultAsync(c => c.Id == Id);
         }
-
+        public async Task<CoinModel?> Get(string name)
+        {
+            return await context.Coins.FirstOrDefaultAsync(c => c.Name == name)!;
+        }
         public async Task<IEnumerable<CoinModel>> GetAll()
         {
             return await context.Coins.ToListAsync();
@@ -47,10 +50,15 @@ namespace CryptoScanner.Data.Repositories.Implementation
 
         public async Task UpdateCoin(CoinModel coin)
         {
-            CoinModel? coinToUpdate = await Get(coin.Id);
+            CoinModel? coinToUpdate = await Get(coin.Name);
             if (coinToUpdate != null)
             {
-                coinToUpdate = coin;
+                coinToUpdate.CurrentPriceEuro = coin.CurrentPriceEuro;
+                coinToUpdate.CurrentPriceDollar = coin.CurrentPriceDollar;
+                coinToUpdate.CurrentPriceSek = coin.CurrentPriceSek;
+                coinToUpdate.PriceChange24hPercent = coin.PriceChange24hPercent;
+                coinToUpdate.LastUpdated = DateTime.Now;
+
                 await context.SaveChangesAsync();
             }
         }

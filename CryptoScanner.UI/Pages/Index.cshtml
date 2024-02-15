@@ -4,7 +4,51 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="card bg-dark m-2 p-2 d-flex justify-content-end mt-5" style="margin-top:50px">
+    <form asp-page-handler="add" method="post" class="d-flex justify-content-end">
+        <input type="text" placeholder="Search and add coin" name="coinName" asp-for="SelectedCoin" class="rounded-1"/>
+        <button class="btn btn-outline-light"><i class="fa-solid fa-search"></i></button>
+    </form>
 </div>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="card bg-danger m-2 p-2 text-center">
+        <h1>Too many searches or refresh requests, please wait 1 minute</h1>
+    </div>
+}
+
+@foreach(var coin in Model.Coins)
+{
+    <div class="card bg-dark m-2 p-2">
+        <div class="card-header d-flex justify-content-between align-items-sm-center">
+            <img src="@coin.Thumbnail" />
+            <h1 class="">@coin.Name</h1>
+            <div class="float-end ">
+                <form asp-page-handler="refresh" method="post">
+                    <input  type="hidden" name="coinName" value="@coin.Name" asp-for="SelectedCoin"/>
+                    <button class="btn btn-outline-light"><i class="fa-solid fa-retweet"></i></button>
+                </form>
+                <form method="post" asp-page-handler="delete">
+                    <input type="hidden" name="coinName" value="@coin.Name" asp-for="SelectedCoin" />
+                    <button class="btn btn-outline-light "><i class="fa-solid fa-eraser"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="d-flex">
+            <div class="card-body">
+                <h3>Current prices</h3>
+                <h4>Dollar: $ @coin.CurrentPriceDollar </h4>
+                <h4>Euro: @coin.CurrentPriceEuro €</h4>
+                <h4>SEK: @coin.CurrentPriceSek Kr </h4>
+            </div>
+            <div class="card-body align-items-sm-end">
+                <h4>Percentage change last 24h: @coin.PriceChange24hPercent %</h4>
+                <h4>Last updated: @coin.LastUpdated</h4>
+            </div>
+        </div>
+        
+        
+    </div>
+}
